@@ -34,7 +34,8 @@ class DocsController < ApplicationController
   end
 
   def destroy
-
+    @doc.delete
+    redirect_to docs_path
   end
 
   private
