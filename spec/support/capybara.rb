@@ -1,12 +1,26 @@
-Capybara.register_driver :headless_chrome do |app|
-  chrome_options = Selenium::WebDriver::Chrome::Options.new
-  chrome_options.args << '--headless'
+Capybara.server = :puma, { Silent: true }
 
-  driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: chrome_options)
-  driver.browser.manage.window.size = Selenium::WebDriver::Dimension.new(2000, 3000)
-  driver
+Capybara.register_driver :chrome_headless do |app|
+  browser_options = ::Selenium::WebDriver::Chrome::Options.new.tap do |options|
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--window-size=1400,1400')
+  end
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
 end
 
-Capybara.javascript_driver = :headless_chrome
-Capybara.default_max_wait_time = 5
-Capybara.server = :puma, { Silent: true }
+Capybara.javascript_driver = :chrome_headless
+
+Capybara.asset_host = 'http://localhost:3000'
+
+# Setup rspec
+RSpec.configure do |config|
+  config.before(:each, type: :system) do
+    driven_by :rack_test
+  end
+
+  config.before(:each, type: :system, js: true) do
+    driven_by :chrome_headless
+  end
+end
