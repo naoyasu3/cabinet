@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "LogIn", type: :system, js: true do
+RSpec.describe "SignUp", type: :system, js: true do
   scenario 'サインアップできること' do
     visit new_user_registration_path
     email = "sample@example.com"
