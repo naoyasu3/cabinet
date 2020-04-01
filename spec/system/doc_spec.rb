@@ -39,6 +39,11 @@ RSpec.describe "Doc", type: :system, js: true do
       expect(page).to have_content title.upcase
       expect(page).to have_content content
     end
-    scenario '削除できること'
+    scenario '削除できること' do
+      visit doc_path(doc)
+      click_link 'Trash It'
+      page.driver.browser.switch_to.alert.accept
+      expect(page).to_not have_content doc.title.upcase
+    end
   end
 end
