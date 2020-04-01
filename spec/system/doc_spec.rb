@@ -29,6 +29,15 @@ RSpec.describe "Doc", type: :system, js: true do
     end
 
     scenario '編集できること' do
+      visit doc_path(doc)
+      click_link 'Fix Doc'
+      title = 'fixed title'
+      content = 'fixed something content'
+      fill_in "doc_title",	with: title
+      fill_in "doc_content",	with: content 
+      click_button 'Update Doc'
+      expect(page).to have_content title.upcase
+      expect(page).to have_content content
     end
     scenario '削除できること'
   end
