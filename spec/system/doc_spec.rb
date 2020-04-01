@@ -1,10 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe "Doc", type: :system do
+RSpec.describe "Doc", type: :system, js: true do
   let(:user) { FactoryBot.create(:user) }
   let!(:docs) { FactoryBot.create_list(:doc, 3, user: user) }
+  let(:doc) { FactoryBot.create(:doc, user: user) }
 
-  feature 'Docの統合テスト' do
+  describe 'Docの統合テスト' do
     before do
       sign_in_as user
     end
@@ -15,8 +16,20 @@ RSpec.describe "Doc", type: :system do
         expect(page).to have_content doc.title.upcase
       end
     end
-    scenario '新規作成できること'
-    scenario '編集できること'
+
+    scenario '新規作成できること' do
+      visit new_doc_path
+      title = "some title test"
+      content = "some text"
+      fill_in "doc_title",	with: title
+      fill_in "doc_content",	with: content 
+      click_button 'Create Doc'
+      expect(page).to have_content title.upcase
+      expect(page).to have_content content
+    end
+
+    scenario '編集できること' do
+    end
     scenario '削除できること'
   end
 end
